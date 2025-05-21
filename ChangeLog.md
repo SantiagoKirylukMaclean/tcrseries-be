@@ -63,3 +63,11 @@
 ### Corregido
 - Cambiada la imagen base de Docker en la etapa de ejecución de `eclipse-temurin:17-jre-alpine` a `amazoncorretto:17-alpine` para resolver problemas de compatibilidad de plataforma
 - Solucionado error de construcción de Docker relacionado con la resolución de metadatos de la imagen base
+
+## 2025-05-23: Implementación de OpenAPI con Swagger
+
+### Añadido
+- Creada clase de configuración OpenApiConfig para personalizar la documentación de la API
+- Añadidas anotaciones de OpenAPI a los DTOs para mejorar la documentación
+- Configurado servidor local en la documentación de OpenAPI con el contexto de la aplicación
+- Mejorada la documentación de la API con información detallada sobre endpoints, parámetros y respuestas

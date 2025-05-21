@@ -68,7 +68,32 @@ El proyecto incluye un Makefile con varios comandos útiles:
 - `make all`: Compila la aplicación, construye la imagen Docker e inicia los contenedores
 
 ## Documentación de la API
-La documentación de la API está disponible en `http://localhost:8080/api/swagger-ui.html` cuando la aplicación está en ejecución.
+La aplicación utiliza OpenAPI con Swagger para documentar la API REST. Para acceder a la documentación:
+
+1. Asegúrate de que la aplicación esté en ejecución (usando Docker o localmente)
+2. Abre un navegador web y navega a:
+   - Swagger UI: `http://localhost:8080/api/swagger-ui.html`
+   - Especificación OpenAPI (JSON): `http://localhost:8080/api/api-docs`
+
+### Uso de Swagger UI
+Swagger UI proporciona una interfaz interactiva para explorar y probar la API:
+
+- Puedes ver todos los endpoints disponibles organizados por controladores
+- Cada endpoint muestra los métodos HTTP soportados, parámetros requeridos y respuestas posibles
+- Puedes expandir cada endpoint para ver detalles y ejemplos de solicitud/respuesta
+- Para probar un endpoint:
+  1. Haz clic en el endpoint que deseas probar
+  2. Haz clic en el botón "Try it out"
+  3. Completa los parámetros requeridos
+  4. Haz clic en "Execute" para enviar la solicitud
+  5. Verás la respuesta del servidor, incluyendo el código de estado y el cuerpo de la respuesta
+
+Para endpoints protegidos, necesitarás autenticarte primero:
+1. Usa el endpoint `/auth/login` para obtener un token JWT
+2. Copia el token de acceso de la respuesta
+3. Haz clic en el botón "Authorize" en la parte superior de la página
+4. Ingresa el token en el formato: `Bearer {tu-token-jwt}`
+5. Haz clic en "Authorize" y luego en "Close"
 
 ## Endpoints principales
 
