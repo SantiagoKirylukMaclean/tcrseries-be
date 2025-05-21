@@ -32,3 +32,5 @@ out/
 
 # Ignore Idea output directory
 .idea/
+# Ignore guidelies proyect
+.junie/
