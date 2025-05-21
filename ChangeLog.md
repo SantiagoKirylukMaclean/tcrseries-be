@@ -71,3 +71,10 @@
 - Añadidas anotaciones de OpenAPI a los DTOs para mejorar la documentación
 - Configurado servidor local en la documentación de OpenAPI con el contexto de la aplicación
 - Mejorada la documentación de la API con información detallada sobre endpoints, parámetros y respuestas
+
+## 2025-05-24: Corrección de Error 403 en Endpoint de Registro
+
+### Corregido
+- Solucionado error 403 Forbidden al acceder al endpoint de registro (/api/auth/register)
+- Actualizada la configuración de seguridad para permitir correctamente el acceso a los endpoints de autenticación teniendo en cuenta el context-path de la aplicación
+- Modificado SecurityConfig.kt para usar la ruta correcta en la configuración de permisos
