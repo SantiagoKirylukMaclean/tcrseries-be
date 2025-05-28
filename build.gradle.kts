@@ -1,6 +1,7 @@
 plugins {
 	kotlin("jvm") version "1.9.25"
 	kotlin("plugin.spring") version "1.9.25"
+	kotlin("plugin.jpa") version "1.9.25"
 	id("org.springframework.boot") version "3.4.5"
 	id("io.spring.dependency-management") version "1.1.7"
 	id("org.flywaydb.flyway") version "9.22.3"
@@ -53,8 +54,8 @@ tasks.withType<Test> {
 
 flyway {
 	url = "jdbc:postgresql://localhost:5432/tcrseries"
-	user = "postgres"
-	password = "postgres"
+	user = "tcrseries"
+	password = "tcrseries"
 	baselineOnMigrate = true
 	locations = arrayOf("classpath:db/migration")
 }
