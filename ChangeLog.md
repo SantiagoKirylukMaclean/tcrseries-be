@@ -78,3 +78,12 @@
 - Solucionado error 403 Forbidden al acceder al endpoint de registro (/api/auth/register)
 - Actualizada la configuración de seguridad para permitir correctamente el acceso a los endpoints de autenticación teniendo en cuenta el context-path de la aplicación
 - Modificado SecurityConfig.kt para usar la ruta correcta en la configuración de permisos
+
+## 2025-06-01: Reorganización de Tests
+
+### Mejorado
+- Reorganizados los tests en paquetes separados para tests unitarios e integración
+- Creado paquete `unit` para tests unitarios
+- Movidos los tests de servicio al paquete `unit/service`
+- Movidos los tests de controlador al paquete `integration/controller`
+- Mejorada la estructura del proyecto para una mejor organización y mantenibilidad

@@ -1,0 +1,14 @@
+services:
+  db-test:
+    image: postgres:15-alpine
+    ports:
+      - "5433:5432"  # Different port to avoid conflicts with the development database
+    environment:
+      - POSTGRES_DB=tcrseries_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    # No volumes defined to ensure a clean instance for each test
+
+networks:
+  default:
+    driver: bridge

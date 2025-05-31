@@ -1,4 +1,4 @@
-package com.puetsnao.tcrseries.infrastructure.web.controller
+package com.puetsnao.tcrseries.integration.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.puetsnao.tcrseries.domain.model.RoleType
