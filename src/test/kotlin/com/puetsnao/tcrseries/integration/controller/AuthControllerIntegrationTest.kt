@@ -1,7 +1,9 @@
 package com.puetsnao.tcrseries.integration.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.puetsnao.tcrseries.domain.model.Accesses
 import com.puetsnao.tcrseries.domain.model.RoleType
+import com.puetsnao.tcrseries.domain.port.PermissionRepository
 import com.puetsnao.tcrseries.domain.port.UserRepository
 import com.puetsnao.tcrseries.infrastructure.persistence.entity.RoleEntity
 import com.puetsnao.tcrseries.infrastructure.persistence.repository.RoleJpaRepository
@@ -39,6 +41,9 @@ class AuthControllerIntegrationTest {
 
     @Autowired
     private lateinit var roleJpaRepository: RoleJpaRepository
+
+    @Autowired
+    private lateinit var permissionRepository: PermissionRepository
 
     @BeforeEach
     fun setup() {
@@ -152,5 +157,46 @@ class AuthControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(registerRequest))
         )
             .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `should register a new user with specified accesses`() {
+        // Given
+        val email = "test${UUID.randomUUID()}@example.com"
+        val accesses = listOf(Accesses.STANDINGS, Accesses.NOTES)
+        val registerRequest = RegisterRequest(
+            email = email,
+            password = "password123",
+            firstName = "Test",
+            lastName = "User",
+            accesses = accesses
+        )
+
+        // When & Then
+        mockMvc.perform(
+            post("/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(registerRequest))
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.accessToken").isString)
+            .andExpect(jsonPath("$.refreshToken").isString)
+            .andExpect(jsonPath("$.userId").isString)
+            .andExpect(jsonPath("$.email").value(email))
+            .andExpect(jsonPath("$.firstName").value("Test"))
+            .andExpect(jsonPath("$.lastName").value("User"))
+
+        // Verify user was created in the database
+        val userOptional = userRepository.findByEmail(email)
+        assert(userOptional.isPresent)
+        val user = userOptional.get()
+        assert(user.email == email)
+        assert(user.firstName == "Test")
+        assert(user.lastName == "User")
+
+        // Verify permissions were created for the user
+        val permissions = permissionRepository.findByUserId(user.id)
+        assert(permissions.size == accesses.size)
+        assert(permissions.map { it.accesses }.containsAll(accesses))
     }
 }

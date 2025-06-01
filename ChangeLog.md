@@ -87,3 +87,39 @@
 - Movidos los tests de servicio al paquete `unit/service`
 - Movidos los tests de controlador al paquete `integration/controller`
 - Mejorada la estructura del proyecto para una mejor organización y mantenibilidad
+
+## 2025-06-10: Implementación de Sistema de Permisos por Características
+
+### Añadido
+- Creado modelo de dominio para permisos de características (Feature, Permission)
+- Implementado repositorio de permisos con operaciones CRUD
+- Añadida tabla de permisos en la base de datos mediante migración Flyway
+- Modificado servicio de autenticación para incluir permisos en el token JWT
+- Creada anotación `@RequirePermission` para proteger endpoints que requieren permisos específicos
+- Implementado aspecto para validar permisos en endpoints anotados
+- Añadidos tests para verificar la validación de permisos
+
+### Características Implementadas
+- Permisos para acceder a Clasificaciones (Standings)
+- Permisos para Simular Fin de Semana (Simulate Weekend)
+- Permisos para Tiempos por Microsector (Timing by Microsector)
+- Permisos para Configuración de Pruebas (Test Configuration)
+- Permisos para Lista de Piezas (Parts List)
+- Permisos para Notas (Notes)
+
+## 2025-06-11: Corrección de Error en Migraciones de Base de Datos
+
+### Corregido
+- Solucionado error "relation 'users' does not exist" al ejecutar la migración V3__create_permissions_table.sql
+- Actualizada la configuración de Flyway en build.gradle.kts para usar las credenciales correctas de la base de datos
+- Alineadas las credenciales de base de datos entre application.yml, docker-compose.yml y build.gradle.kts
+- Corregido problema con la tabla flyway_schema_history que mostraba migraciones como aplicadas cuando no lo estaban realmente
+- Reiniciado el historial de migraciones para asegurar que todas las tablas se creen correctamente
+
+## 2025-06-15: Mejora en la Creación de Usuarios con Permisos Específicos
+
+### Añadido
+- Implementada funcionalidad para asignar permisos específicos durante la creación de usuarios
+- Modificado el DTO RegisterRequest para aceptar una lista de accesos (opcional)
+- Actualizado el servicio de autenticación para guardar los permisos especificados al crear un usuario
+- Añadidos tests unitarios y de integración para validar la asignación de permisos durante el registro

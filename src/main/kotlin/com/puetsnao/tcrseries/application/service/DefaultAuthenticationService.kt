@@ -1,11 +1,13 @@
 package com.puetsnao.tcrseries.application.service
 
+import com.puetsnao.tcrseries.domain.model.Accesses
 import com.puetsnao.tcrseries.domain.model.RoleType
 import com.puetsnao.tcrseries.domain.model.Token
 import com.puetsnao.tcrseries.domain.model.TokenType
 import com.puetsnao.tcrseries.domain.model.User
 import com.puetsnao.tcrseries.domain.port.AuthenticationResult
 import com.puetsnao.tcrseries.domain.port.AuthenticationService
+import com.puetsnao.tcrseries.domain.port.PermissionRepository
 import com.puetsnao.tcrseries.domain.port.RoleRepository
 import com.puetsnao.tcrseries.domain.port.TokenRepository
 import com.puetsnao.tcrseries.domain.port.UserRepository
@@ -23,13 +25,14 @@ class DefaultAuthenticationService(
     private val userRepository: UserRepository,
     private val roleRepository: RoleRepository,
     private val tokenRepository: TokenRepository,
+    private val permissionRepository: PermissionRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtService: JwtService,
     private val authenticationManager: AuthenticationManager
 ) : AuthenticationService {
 
     @Transactional
-    override fun register(email: String, password: String, firstName: String, lastName: String): User {
+    override fun register(email: String, password: String, firstName: String, lastName: String, accesses: List<Accesses>): User {
         if (userRepository.existsByEmail(email)) {
             throw IllegalArgumentException("Email already exists")
         }
@@ -48,6 +51,11 @@ class DefaultAuthenticationService(
 
         roleRepository.assignRoleToUser(savedUser.id, userRole.id)
 
+        // Grant the specified accesses to the user
+        accesses.forEach { access ->
+            permissionRepository.grantPermission(savedUser.id, access)
+        }
+
         return savedUser
     }
 
@@ -60,8 +68,12 @@ class DefaultAuthenticationService(
         val user = userRepository.findByEmail(email)
             .orElseThrow { UsernameNotFoundException("User not found with email: $email") }
 
+        // Get user permissions
+        val permissions = getUserPermissions(user.id)
+
         val accessToken = jwtService.generateToken(
-            org.springframework.security.core.userdetails.User.builder()
+            extraClaims = mapOf("permissions" to permissions),
+            userDetails = org.springframework.security.core.userdetails.User.builder()
                 .username(user.email)
                 .password(user.password)
                 .build()
@@ -96,8 +108,12 @@ class DefaultAuthenticationService(
         val user = userRepository.findById(token.userId)
             .orElseThrow { UsernameNotFoundException("User not found") }
 
+        // Get user permissions
+        val permissions = getUserPermissions(user.id)
+
         val accessToken = jwtService.generateToken(
-            org.springframework.security.core.userdetails.User.builder()
+            extraClaims = mapOf("permissions" to permissions),
+            userDetails = org.springframework.security.core.userdetails.User.builder()
                 .username(user.email)
                 .password(user.password)
                 .build()
@@ -133,5 +149,16 @@ class DefaultAuthenticationService(
 
     private fun revokeAllUserTokens(userId: UUID) {
         tokenRepository.revokeAllUserTokens(userId)
+    }
+
+    /**
+     * Get the list of feature names that the user has permission to access.
+     *
+     * @param userId The ID of the user
+     * @return List of feature names
+     */
+    private fun getUserPermissions(userId: UUID): List<String> {
+        return permissionRepository.findByUserId(userId)
+            .map { it.accesses.name }
     }
 }

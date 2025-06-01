@@ -56,8 +56,8 @@ tasks.withType<Test> {
 
 flyway {
 	url = "jdbc:postgresql://localhost:5432/tcrseries"
-	user = "tcrseries"
-	password = "tcrseries"
+	user = "postgres"
+	password = "postgres"
 	baselineOnMigrate = true
 	locations = arrayOf("classpath:db/migration")
 }

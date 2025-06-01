@@ -1,5 +1,6 @@
 package com.puetsnao.tcrseries.infrastructure.web.dto
 
+import com.puetsnao.tcrseries.domain.model.Accesses
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
@@ -23,5 +24,8 @@ data class RegisterRequest(
 
     @field:NotBlank(message = "Last name is required")
     @field:Schema(description = "User's last name", example = "Doe", required = true)
-    val lastName: String
+    val lastName: String,
+
+    @field:Schema(description = "List of accesses to grant to the user", required = false)
+    val accesses: List<Accesses> = emptyList()
 )

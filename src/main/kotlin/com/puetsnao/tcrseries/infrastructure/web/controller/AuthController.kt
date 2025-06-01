@@ -28,14 +28,15 @@ class AuthController(
             email = request.email,
             password = request.password,
             firstName = request.firstName,
-            lastName = request.lastName
+            lastName = request.lastName,
+            accesses = request.accesses
         )
-        
+
         val authResult = authenticationService.authenticate(
             email = request.email,
             password = request.password
         )
-        
+
         return ResponseEntity.ok(
             AuthenticationResponse(
                 accessToken = authResult.accessToken,
@@ -55,7 +56,7 @@ class AuthController(
             email = request.email,
             password = request.password
         )
-        
+
         return ResponseEntity.ok(
             AuthenticationResponse(
                 accessToken = authResult.accessToken,
@@ -72,7 +73,7 @@ class AuthController(
     @Operation(summary = "Refresh token", description = "Refreshes the access token using a valid refresh token")
     fun refreshToken(@Valid @RequestBody request: RefreshTokenRequest): ResponseEntity<AuthenticationResponse> {
         val authResult = authenticationService.refreshToken(request.refreshToken)
-        
+
         return ResponseEntity.ok(
             AuthenticationResponse(
                 accessToken = authResult.accessToken,
